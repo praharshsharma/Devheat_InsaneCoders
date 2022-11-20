@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+
+    <link type="text/css" rel="stylesheet"  href="login.css"/>
+
+    <script src="https://kit.fontawesome.com/e96e2deb4c.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <video autoplay muted loop id="myVideo">
+        <source src="3.mkv" type="video/mp4">
+    </video>
+
+    <div class="login">
+        <h1>Login</h1>
+       
+        <div class="custom-control custom-switch mb-3">
+            <input type="checkbox" class="custom-control-input" id="customSwitch1">
+            <label class="custom-control-label" for="customSwitch1">Keep me Logged In</label>
+        </div>
+
+        <br><br><br><br>
+       
+        <button type="text" id="gog_btn"><i class="fa-brands fa-google"></i></button>
+
+    </div>
+
+
+    <script type="module" src="authentication.js">
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>form2</title>
+   
+</head>
+
+<body>
+    <label>First Name: </label><input id="Namebox" type="text"><br><br>
+    <label>Last Name:</label><input id="Lastbox" type="text"><br><br>
+    <label>Father's Name:</label><input id="Fatherbox" type="text"><br><br>
+    <label>Email:</label><input id="Secbox" type="email"><br><br>
+    <label>Phone:</label><input id="phonebox" type="phone"><br><br>
+    <label>Gender:</label>
+    <select id="Genbox">
+        <option value="">--Select--</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </select>
+
+    
+
+    <br><br>
+
+    <div class="form-group">
+        <label for="birth_date">DOB :</label>
+       <input type="date" id="dob" name="birth_date" id="birth_date">
+    </div>
+
+    <br><br>
+
+    <label>Address</label>
+    <textarea rows="4" cols="50" id="addressbox"></textarea>
+    
+    <br><br>
+
+    <label>Preferred Institute</label>
+    <select name="institutepref" id="institutepref">
+        <option value="">--select</option>
+        <option value="inst1">Massachusetts Institute of Technology (MIT)</option>
+        <option value="Stanford University">Stanford University</option>
+        <option value="University of Oxford">University of Oxford</option>
+        <option value="Nanyang Technological University">Nanyang Technological University</option>
+        </select>
+
+        <br><br>
+
+
+
+
+
+    <button id="Insbtn">INSERT</button>
+    <br><br>
+    <hr>
+    <button id="selbtn">Select Profile Image in Protrait</button>
+
+    <label id="imgnamebox"></label><br><br>
+    <label id="extlab"></label><br><br>
+    <img id="myimg">
+    <label id="upprogress"></label><br><br>
+    <button id="upbtn">Upload Image</button>
+
+    <hr>
+    <label>Upload your Pdfs</label><br><br>
+    <div id="pdfbox"></div>
+    <label id="extpdflab"></label><br><br>
+    <label id="upprogresspdf"></label><br><br>
+    
+    <button id="selpdfbtn">Select Pdf</button>
+    <button id="uppdfbtn">Upload Pdf</button>
+
+
+    <div id="mypdf"></div>
+
+    <br><br>
+    
+   <button id="final_submit">
+    SUBMIT
+   </button>
+
+
+    <!--------------------IMPORTS+CONFIGURATION-------------->
+
+    <script type="module">
+
+        let i=1;
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
+        // import firebase from 'firebase/compat/app';
+        const firebaseConfig = {
+            apiKey: "AIzaSyDPXRgeyf-_ubBfqM8j99L9Yqt1_0w_nj0",
+            authDomain: "firev9jsdb-4c1a2.firebaseapp.com",
+            databaseURL: "https://firev9jsdb-4c1a2-default-rtdb.firebaseio.com",
+            projectId: "firev9jsdb-4c1a2",
+            storageBucket: "firev9jsdb-4c1a2.appspot.com",
+            messagingSenderId: "326924521814",
+            appId: "1:326924521814:web:10481b3c2dbb15d98b06f7"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        import { getDatabase, ref, get, set, child, update, remove }
+            from "https://www.gstatic.com/firebasejs/9.13.0/firebase-database.js";
+
+            
+        import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL }
+            from "https://www.gstatic.com/firebasejs/9.13.0/firebase-storage.js"
+
+        const db = getDatabase();
+
+        // References
+
+        var name1box = document.getElementById("Namebox");
+        var lastbox = document.getElementById("Lastbox");
+        var mailbox = document.getElementById("Secbox");
+        var phonebox = document.getElementById("phonebox");
+        var fbox = document.getElementById("Fatherbox");
+        var genbox = document.getElementById("Genbox");
+        var dobbox = document.getElementById("dob");
+        var adbox = document.getElementById("addressbox");
+        var instbox = document.getElementById("institutepref");
+        
+        var insbtn = document.getElementById("Insbtn");
+
+        var files = [];
+        var reader = new FileReader();
+
+        var namebox = document.getElementById('imgnamebox');
+        var extlab = document.getElementById('extlab');
+        var myimg = document.getElementById('myimg');
+        var proglab = document.getElementById('upprogress');
+
+
+        var namepdfbox = document.getElementById('pdfbox');
+        var extpdflab = document.getElementById('extpdflab');
+        var mypdf = document.getElementById('mypdf');
+        var proglabpdf = document.getElementById('upprogresspdf');
+
+        var SelBtn = document.getElementById('selbtn');
+        var UpBtn = document.getElementById('upbtn');
+
+        var SelpdfBtn = document.getElementById('selpdfbtn');
+        var UppdfBtn = document.getElementById('uppdfbtn');
+
+        var input = document.createElement('input');
+        input.type = 'file';
+
+        var input2 = document.createElement('input');
+        input2.type = 'file';
+
+        input.onchange = e => {
+            files = e.target.files;  //this e.target.files returns an array 
+            var extension = GetFileExt(files[0]);
+            var name = GetFileName(files[0]);
+
+            imgnamebox.innerHTML=name;
+            extlab.innerHTML = extension;
+            reader.readAsDataURL(files[0]);
+
+            reader.onload = function () {
+                mypdf.href = reader.result;
+
+            }
+
+        }
+
+        input2.onchange = e => {
+            files = e.target.files;  //this e.target.files returns an array 
+            var extension = GetFileExt(files[0]);
+            var name = GetFileName(files[0]);
+            console.log(name);
+            namepdfbox.innerHTML=name;
+            extpdflab.innerHTML = extension;
+            reader.readAsDataURL(files[0]);
+
+            reader.onload = function () {
+                mypdf.href = reader.result;
+
+            }
+
+        }
+
+        // ------------SELECTION------------
+
+        SelBtn.onclick = function () {
+            input.click();
+        }
+
+        SelpdfBtn.onclick = function () {
+            input2.click();
+        }
+
+        function GetFileExt(file) {            //if file name is abc.cde.xyz.png
+            var temp = file.name.split('.');   //===> ['abc','cde','xyz','png']
+            var ext = temp.slice((temp.length - 1), (temp.length));  //==>['png']
+            return '.' + ext[0];   //===>'.png'
+        }
+
+        function GetFileName(file) {           //if file name is abc.cde.xyz.png
+            var temp = file.name.split('.');   //===>['abc','cde','xyz','png']
+            var fname = temp.slice(0, -1).join('.');  //===>['abc','cde','xyz']
+            return fname;                         //abc.cde.xyz
+        }
+
+
+        // ------------UPLOAD PROCESS------------
+
+        async function UploadProcess1() {
+            var ImgToUpload = files[0];
+            var ImgName = imgnamebox.value + extlab.innerHTML;
+
+            if (!ValidateName()) {
+                alert('name cannot contain ".","#","$","[", or "]"');
+                return;
+            }
+
+            const metaData = {
+                contentType: ImgToUpload.type
+            }
+            const storage = getStorage();
+            const storageRef = sRef(storage, "Images/" + ImgName);
+            const UploadTask = uploadBytesResumable(storageRef, ImgToUpload, metaData);
+
+            UploadTask.on('state-changed', (snapshot) => {
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                proglab.innerHTML = "Upload " + progress + "%";
+            },
+                (error) => {
+                    alert("error : image not uploaded!");
+                },
+                () => {
+                    getDownloadURL(UploadTask.snapshot.ref).then((downloadURL) => {
+                        console.log(downloadURL);
+                        SaveURLtoRealtimeDB(downloadURL);
+                    });
+                }
+            );
+
+        }
+
+        async function UploadProcess2() {
+            var ImgToUpload = files[0];
+            var ImgName = namepdfbox.innerHTML + extpdflab.innerHTML;
+
+            if (!ValidateNamePdf()) {
+                alert('name cannot contain ".","#","$","[", or "]"');
+                return;
+            }
+
+            console.log("uploadpdf");
+            console.log(ImgName);
+
+            const metaData = {
+                contentType: ImgToUpload.type
+            }
+            const storage = getStorage();
+            const storageRef = sRef(storage, "Images/" + ImgName);
+            const UploadTask = uploadBytesResumable(storageRef, ImgToUpload, metaData);
+
+            UploadTask.on('state-changed', (snapshot) => {
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                proglabpdf.innerHTML = "Upload " + progress + "%";
+            },
+                (error) => {
+                    alert("error : image not uploaded!");
+                },
+                () => {
+                    getDownloadURL(UploadTask.snapshot.ref).then((downloadURL) => {
+                        console.log(downloadURL);
+                        SaveURLtoRealtimeDBpdf(downloadURL,i);
+                    });
+                }
+            );
+
+        }
+
+        function ValidateName() {
+            var regex = /[\.#$\[\]]/  //regular expression
+            return !(regex.test(imgnamebox.value));
+        }
+
+        function ValidateNamePdf() {
+            var regex = /[\.#$\[\]]/  //regular expression
+            return !(regex.test(pdfbox.value));
+        }
+
+        //---------------Functions for REALTIME DATABASE---------------------//
+        function SaveURLtoRealtimeDB(URL) {
+            let shortmail = mailbox.value;
+            let str = shortmail.replace("@gmail.com", "");
+            console.log(str);
+            var name = imgnamebox.innerHTML;
+            var ext = extlab.innerHTML;
+            console.log(name);
+            console.log(ext);
+            set(ref(db, `StudentsForm/${str}/profileimage/`), {
+                ImageName: (name + ext),
+                ImgURL: URL
+            })
+            .then(() => {
+                    alert("data stored successfully");
+                    console.log("then");
+                })
+                .catch((error) => {
+                    alert("unsuccessful, error" + error);
+                    console.log("catch");
+                });
+        }
+
+        
+
+        function SaveURLtoRealtimeDBpdf(URL,i) {
+            let shortmail = mailbox.value;
+            let str = shortmail.replace("@gmail.com", "");
+            console.log(str);
+            var name = namepdfbox.innerHTML;
+            var ext = extpdflab.innerHTML;
+            console.log(name);
+            console.log(ext);
+            i++;
+            set(ref(db, `StudentsForm/${str}/Documents/${name}`), {
+                PdfName: (name + ext),
+                PdfURL: URL
+                
+            })
+            .then(() => {
+                    
+                    console.log("then");
+                    var a=document.createElement('a');
+                    a.id=name;
+                    a.classList.add('a');
+                    a.href=URL;
+                    a.innerHTML=name;
+                    //mypdf.innerHTML='<br>';
+                    mypdf.append(a);
+                    var br=document.createElement('br');
+                    mypdf.append(br);
+                    alert("data stored successfully");
+                    pdfbox.innerHTML="Choose next file";
+                    extpdflab.innerHTML="";
+                    upprogresspdf.innerHTML="";
+                })
+                .catch((error) => {
+                    alert("unsuccessful, error" + error);
+                    console.log("catch");
+                });
+        }
+
+        // INSERT DATA FUNCTION
+
+        function InsertData() {
+            let shortmail = mailbox.value;
+            let str = shortmail.replace("@gmail.com", "");
+            
+            
+            set(ref(db, "StudentsForm/" + str), {
+                FirstName: name1box.value,
+                LastName: lastbox.value,   //insert roll no. in the form of number by Number(rollbox.value)  for queries to be applied on it
+                Mail: shortmail,
+                Phone: phonebox.value,
+                Fathername: fbox.value,
+                Gender: genbox.value,
+                DOB: dobbox.value,
+                Address: adbox.value,
+                Institute: instbox.value
+                
+            })
+                .then(() => {
+                    alert("data stored successfully");
+                })
+                .catch((error) => {
+                    alert("unsuccessful, error" + error);
+                });
+        }
+
+        
+
+
+        // Assign Events to Btns
+
+        Insbtn.addEventListener('click', InsertData);
+        UpBtn.onclick = UploadProcess1;
+        UppdfBtn.onclick = UploadProcess2;
+       
+
+        function backToHome() {
+            window.location = "home.html" ;
+        }
+
+        document.getElementById("final_submit").addEventListener('click' , backToHome);
+
+    </script>
+</body>
+
+</html>
+
+
+
+<!-- arrow function are syntax shortcut to normal function -->
+<!--
+(parameter)=>{                        
+
+}
+
+function
+function abc(parameter){
+
+} -->
+
+
+<!-- A DataSnapshot contains data form a database location. 
+Anytime you read data from Database, you receive teh data as a DataSnapshot. -->
